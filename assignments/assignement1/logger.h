@@ -2,14 +2,16 @@
 #define SENECA_LOGGER_H
 
 #include "event.h"
+
+#include <cstddef>
 #include <ostream>
 
 namespace seneca {
 
     class Logger {
         Event* m_events{};
-        size_t m_size{};
-        size_t m_capacity{};
+        std::size_t m_size{};
+        std::size_t m_capacity{};
 
     public:
         Logger() = default;
@@ -24,7 +26,8 @@ namespace seneca {
 
         void addEvent(const Event& event);
 
-        friend std::ostream& operator<<(std::ostream& os,
+        friend std::ostream& operator<<(
+            std::ostream& out,
             const Logger& logger);
     };
 

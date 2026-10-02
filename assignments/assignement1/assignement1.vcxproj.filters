@@ -51,4 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Debug\english_large.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="x64\Debug\english_small.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

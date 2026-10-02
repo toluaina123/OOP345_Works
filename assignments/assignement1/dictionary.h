@@ -1,8 +1,8 @@
 #ifndef SENECA_DICTIONARY_H
 #define SENECA_DICTIONARY_H
 
-#include <string>
 #include <cstddef>
+#include <string>
 
 namespace seneca {
 
@@ -26,7 +26,7 @@ namespace seneca {
 
     class Dictionary {
         Word* m_words{};
-        size_t m_size{};
+        std::size_t m_size{};
 
     public:
         Dictionary() = default;

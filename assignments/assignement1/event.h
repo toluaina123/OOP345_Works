@@ -17,7 +17,8 @@ namespace seneca {
         Event(const char* name,
             const std::chrono::nanoseconds& duration);
 
-        friend std::ostream& operator<<(std::ostream& os,
+        friend std::ostream& operator<<(
+            std::ostream& out,
             const Event& event);
     };
 
