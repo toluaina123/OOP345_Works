@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <iostream>
-#include <sstream>
+#include <string>
 
 namespace seneca {
 
@@ -71,15 +71,16 @@ namespace seneca {
         }
     }
 
-    Dictionary::Dictionary(const char* filename) {
+    Dictionary::Dictionary(const char* filename)
+        : m_words(nullptr), m_size(0) {
+
+        if (filename == nullptr)
+            return;
 
         std::ifstream file(filename);
 
-        if (!file) {
-            m_words = nullptr;
-            m_size = 0;
+        if (!file)
             return;
-        }
 
         size_t count = 0;
         std::string line;
@@ -89,14 +90,13 @@ namespace seneca {
                 ++count;
         }
 
+        if (count == 0)
+            return;
+
         file.clear();
         file.seekg(0);
 
-        m_size = count;
-
-        if (m_size > 0) {
-            m_words = new Word[m_size];
-        }
+        Word* words = new Word[count];
 
         size_t index = 0;
 
@@ -105,22 +105,63 @@ namespace seneca {
             if (line.empty())
                 continue;
 
-            std::stringstream ss(line);
+            size_t firstComma = line.find(',');
 
-            std::string word;
-            std::string pos;
-            std::string definition;
+            if (firstComma == std::string::npos)
+                continue;
 
-            std::getline(ss, word, ',');
-            std::getline(ss, pos, ',');
-            std::getline(ss, definition);
+            size_t secondComma = line.find(',', firstComma + 1);
 
-            m_words[index].m_word = word;
-            m_words[index].m_definition = definition;
-            m_words[index].m_pos = getPartOfSpeech(pos);
+            if (secondComma == std::string::npos)
+                continue;
+
+            std::string word =
+                line.substr(0, firstComma);
+
+            std::string pos =
+                line.substr(
+                    firstComma + 1,
+                    secondComma - firstComma - 1
+                );
+
+            std::string definition =
+                line.substr(secondComma + 1);
+
+            if (definition.size() >= 2 &&
+                definition.front() == '"' &&
+                definition.back() == '"') {
+
+                definition = definition.substr(
+                    1,
+                    definition.size() - 2
+                );
+            }
+
+            std::string cleanedDefinition;
+
+            for (size_t i = 0; i < definition.size(); ++i) {
+
+                if (definition[i] == '"' &&
+                    i + 1 < definition.size() &&
+                    definition[i + 1] == '"') {
+
+                    cleanedDefinition += '"';
+                    ++i;
+                }
+                else {
+                    cleanedDefinition += definition[i];
+                }
+            }
+
+            words[index].m_word = word;
+            words[index].m_definition = cleanedDefinition;
+            words[index].m_pos = getPartOfSpeech(pos);
 
             ++index;
         }
+
+        m_words = words;
+        m_size = index;
     }
 
     Dictionary::~Dictionary() {
@@ -128,9 +169,11 @@ namespace seneca {
     }
 
     Dictionary::Dictionary(const Dictionary& other)
-        : m_size(other.m_size) {
+        : m_words(nullptr),
+        m_size(other.m_size) {
 
         if (m_size > 0) {
+
             m_words = new Word[m_size];
 
             for (size_t i = 0; i < m_size; ++i) {
@@ -143,18 +186,21 @@ namespace seneca {
 
         if (this != &other) {
 
-            delete[] m_words;
+            Word* newWords = nullptr;
 
-            m_words = nullptr;
-            m_size = other.m_size;
+            if (other.m_size > 0) {
 
-            if (m_size > 0) {
-                m_words = new Word[m_size];
+                newWords = new Word[other.m_size];
 
-                for (size_t i = 0; i < m_size; ++i) {
-                    m_words[i] = other.m_words[i];
+                for (size_t i = 0; i < other.m_size; ++i) {
+                    newWords[i] = other.m_words[i];
                 }
             }
+
+            delete[] m_words;
+
+            m_words = newWords;
+            m_size = other.m_size;
         }
 
         return *this;
@@ -212,8 +258,11 @@ namespace seneca {
                 else {
 
                     std::cout << std::string(
-                        m_words[i].m_word.length(), ' '
-                    ) << " - ";
+                        m_words[i].m_word.length(),
+                        ' '
+                    );
+
+                    std::cout << " - ";
 
                     if (g_settings.m_verbose &&
                         m_words[i].m_pos != PartOfSpeech::Unknown) {
@@ -227,13 +276,13 @@ namespace seneca {
                         << std::endl;
                 }
 
-                if (!g_settings.m_show_all) {
+                if (!g_settings.m_show_all)
                     break;
-                }
             }
         }
 
         if (!found) {
+
             std::cout << "Word '"
                 << word
                 << "' was not found in the dictionary."

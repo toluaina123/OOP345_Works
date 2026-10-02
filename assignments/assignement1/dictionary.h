@@ -2,6 +2,7 @@
 #define SENECA_DICTIONARY_H
 
 #include <string>
+#include <cstddef>
 
 namespace seneca {
 
