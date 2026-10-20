@@ -27,7 +27,7 @@
     <ClInclude Include="weapons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="characterTp1.h">
+    <ClInclude Include="characterTpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="barbarian.h">
@@ -36,7 +36,7 @@
     <ClInclude Include="archer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rouge.h">
+    <ClInclude Include="rogue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="team.h">
