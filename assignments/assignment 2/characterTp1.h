@@ -39,10 +39,9 @@ namespace seneca {
         }
 
         void takeDamage(int dmg) override {
+            if (dmg <= 0) return;
             m_health -= dmg;
-            if (getHealth() < 0) {
-                m_health = 0;
-            }
+            if (getHealth() < 0) m_health = 0;
         }
     };
 }
