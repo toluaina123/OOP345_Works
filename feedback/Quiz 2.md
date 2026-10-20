@@ -111,7 +111,7 @@ const Supervisor& supervisor() const{
 
 # Quiz 2
 
-Student: Tolu Aina
+Student: [Tolu Aina](mailto:taina2@myseneca.ca?subject=OOP345NAA%20Quiz%202%20-%20Feedback)
 Seneca User ID: taina2
 Assessment Version: Version 2
 Points: **30**/30
@@ -146,7 +146,7 @@ Final Mark: **10.00**/10
 
 ## Feedback
 
-Tolu, your solution shows the required template, owned array, supervisor reference, and zero counter. The insertion logic and accessors are correct in intent. Check names and punctuation carefully: keep SIZE, m_count, m_belongings, and Supervisor consistent, and use matching brackets and braces. The small writing errors do not hide the C++ knowledge shown here.
+[Tolu](mailto:taina2@myseneca.ca?subject=OOP345NAA%20Quiz%202%20-%20Feedback), your solution shows the required template, owned array, supervisor reference, and zero counter. The insertion logic and accessors are correct in intent. Check names and punctuation carefully: keep SIZE, m_count, m_belongings, and Supervisor consistent, and use matching brackets and braces. The small writing errors do not hide the C++ knowledge shown here.
 
 # Rubric
 
