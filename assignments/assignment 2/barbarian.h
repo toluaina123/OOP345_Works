@@ -1,39 +1,43 @@
+
 /*
 Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
 Student ID: 100832237
-Date: October 20, 2026
+Date: November 3, 2026
+
+AI assistance from ChatGPT was used to revise the Barbarian class.
 */
 #ifndef SENECA_BARBARIAN_H
 #define SENECA_BARBARIAN_H
 
 #include "characterTpl.h"
-#include "abilities.h"
-#include "weapons.h"
+#include <iostream>
 
 namespace seneca {
+
     template <typename T, typename Ability_t, typename Weapon_t>
     class Barbarian : public CharacterTpl<T> {
-        Ability_t m_ability{};
-        int m_baseAttack{};
-        int m_baseDefense{};
-        Weapon_t m_weapon1{};
-        Weapon_t m_weapon2{};
+        int m_baseDefense;
+        int m_baseAttack;
+        Ability_t m_ability;
+        Weapon_t m_weapon[2];
 
     public:
-        Barbarian(const char* name, int health, int baseAttack,
-            int baseDefense, Weapon_t weapon1, Weapon_t weapon2)
-            : CharacterTpl<T>(name, health),
-            m_baseAttack(baseAttack),
+        Barbarian(const char* name, int healthMax,
+            int baseAttack, int baseDefense,
+            Weapon_t primaryWeapon, Weapon_t secondaryWeapon)
+            : CharacterTpl<T>(name, healthMax),
             m_baseDefense(baseDefense),
-            m_weapon1(weapon1),
-            m_weapon2(weapon2) {}
+            m_baseAttack(baseAttack),
+            m_ability{},
+            m_weapon{ primaryWeapon, secondaryWeapon } {
+        }
 
         int getAttackAmnt() const override {
             return m_baseAttack +
                 static_cast<int>(
-                    (static_cast<double>(m_weapon1) +
-                        static_cast<double>(m_weapon2)) / 2
+                    (static_cast<double>(m_weapon[0]) +
+                        static_cast<double>(m_weapon[1])) / 2
                     );
         }
 
@@ -46,9 +50,12 @@ namespace seneca {
         }
 
         void attack(Character* enemy) override {
-            if (!enemy) return;
+            if (enemy == nullptr) {
+                return;
+            }
 
-            std::cout << this->getName() << " attacks "
+            std::cout << this->getName()
+                << " is attacking "
                 << enemy->getName() << ".\n";
 
             m_ability.useAbility(this);
@@ -56,18 +63,38 @@ namespace seneca {
             int damage = getAttackAmnt();
             m_ability.transformDamageDealt(damage);
 
-            std::cout << "    Damage dealt: " << damage << '\n';
+            std::cout << "    Barbarian deals "
+                << damage << " melee damage!\n";
+
             enemy->takeDamage(damage);
         }
 
         void takeDamage(int dmg) override {
+            std::cout << this->getName()
+                << " is attacked for "
+                << dmg << " damage.\n";
+
+            std::cout << "    Barbarian has a defense of "
+                << m_baseDefense
+                << ". Reducing damage received.\n";
+
+            // Apply defense before the special ability.
+            dmg -= m_baseDefense;
+
+            if (dmg < 0) {
+                dmg = 0;
+            }
+
             m_ability.transformDamageReceived(dmg);
 
-            int actual = dmg - getDefenseAmnt();
-            if (actual < 0) actual = 0;
+            if (dmg < 0) {
+                dmg = 0;
+            }
 
-            CharacterTpl<T>::takeDamage(actual);
+            CharacterTpl<T>::takeDamage(dmg);
         }
     };
+
 }
+
 #endif

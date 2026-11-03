@@ -1,3 +1,4 @@
+
 /*
 Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
@@ -55,8 +56,7 @@ namespace seneca {
         for (std::size_t i = 0; i < src.m_size; ++i) {
             newMembers[i] = src.m_members[i];
 
-            // A copied Guild shares the Character pointers.
-            // It does not apply another health bonus.
+            // Copying a Guild does not apply another health bonus.
             newBonusApplied[i] = false;
         }
 
@@ -117,7 +117,7 @@ namespace seneca {
     }
 
     void Guild::addMember(Character* character) {
-        if (!character) {
+        if (character == nullptr) {
             return;
         }
 
@@ -151,6 +151,7 @@ namespace seneca {
 
         m_members = newMembers;
         m_bonusApplied = newBonusApplied;
+
         ++m_size;
 
         character->setHealthMax(
@@ -201,12 +202,12 @@ namespace seneca {
     }
 
     void Guild::showMembers() const {
-        std::cout << "[Guild] " << m_name << '\n';
-
-        if (m_size == 0) {
-            std::cout << "No guild." << '\n';
+        if (m_name.empty()) {
+            std::cout << "No guild.\n";
             return;
         }
+
+        std::cout << "[Guild] " << m_name << '\n';
 
         for (std::size_t i = 0; i < m_size; ++i) {
             std::cout << "    " << i + 1 << ": "
