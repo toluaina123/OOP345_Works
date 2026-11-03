@@ -151,6 +151,7 @@
     <ClInclude Include="weapons.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="guild.cpp" />
     <ClCompile Include="tester_1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
