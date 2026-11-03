@@ -4,7 +4,8 @@ Seneca email: taina2@myseneca.ca
 Student ID: 100832237
 Date: November 3, 2026
 
-Implementation developed with AI assistance.
+AI assistance from ChatGPT was used to revise Guild copy and health-bonus
+management.
 */
 #include "guild.h"
 #include <utility>
@@ -20,13 +21,18 @@ namespace seneca {
 
     void Guild::clear() {
         for (std::size_t i = 0; i < m_size; ++i) {
-            m_members[i]->setHealthMax(
-                m_members[i]->getHealthMax() - 300
-            );
+            if (m_bonusApplied[i]) {
+                m_members[i]->setHealthMax(
+                    m_members[i]->getHealthMax() - 300
+                );
+            }
         }
 
         delete[] m_members;
+        delete[] m_bonusApplied;
+
         m_members = nullptr;
+        m_bonusApplied = nullptr;
         m_size = 0;
     }
 
@@ -35,17 +41,28 @@ namespace seneca {
             return;
         }
 
-        m_members = new Character * [src.m_size];
+        Character** newMembers = new Character * [src.m_size];
+        bool* newBonusApplied = nullptr;
+
+        try {
+            newBonusApplied = new bool[src.m_size];
+        }
+        catch (...) {
+            delete[] newMembers;
+            throw;
+        }
 
         for (std::size_t i = 0; i < src.m_size; ++i) {
-            m_members[i] = src.m_members[i];
+            newMembers[i] = src.m_members[i];
 
-            m_members[i]->setHealthMax(
-                m_members[i]->getHealthMax() + 300
-            );
-
-            ++m_size;
+            // A copied Guild shares the Character pointers.
+            // It does not apply another health bonus.
+            newBonusApplied[i] = false;
         }
+
+        m_members = newMembers;
+        m_bonusApplied = newBonusApplied;
+        m_size = src.m_size;
     }
 
     Guild::Guild(const Guild& src)
@@ -65,9 +82,11 @@ namespace seneca {
     Guild::Guild(Guild&& src) noexcept
         : m_name(std::move(src.m_name)),
         m_members(src.m_members),
+        m_bonusApplied(src.m_bonusApplied),
         m_size(src.m_size) {
 
         src.m_members = nullptr;
+        src.m_bonusApplied = nullptr;
         src.m_size = 0;
     }
 
@@ -77,9 +96,11 @@ namespace seneca {
 
             m_name = std::move(src.m_name);
             m_members = src.m_members;
+            m_bonusApplied = src.m_bonusApplied;
             m_size = src.m_size;
 
             src.m_members = nullptr;
+            src.m_bonusApplied = nullptr;
             src.m_size = 0;
         }
 
@@ -91,6 +112,7 @@ namespace seneca {
 
         swap(m_name, other.m_name);
         swap(m_members, other.m_members);
+        swap(m_bonusApplied, other.m_bonusApplied);
         swap(m_size, other.m_size);
     }
 
@@ -105,17 +127,30 @@ namespace seneca {
             }
         }
 
-        Character** temp = new Character * [m_size + 1];
+        Character** newMembers = new Character * [m_size + 1];
+        bool* newBonusApplied = nullptr;
 
-        for (std::size_t i = 0; i < m_size; ++i) {
-            temp[i] = m_members[i];
+        try {
+            newBonusApplied = new bool[m_size + 1];
+        }
+        catch (...) {
+            delete[] newMembers;
+            throw;
         }
 
-        temp[m_size] = character;
+        for (std::size_t i = 0; i < m_size; ++i) {
+            newMembers[i] = m_members[i];
+            newBonusApplied[i] = m_bonusApplied[i];
+        }
+
+        newMembers[m_size] = character;
+        newBonusApplied[m_size] = true;
 
         delete[] m_members;
+        delete[] m_bonusApplied;
 
-        m_members = temp;
+        m_members = newMembers;
+        m_bonusApplied = newBonusApplied;
         ++m_size;
 
         character->setHealthMax(
@@ -135,19 +170,25 @@ namespace seneca {
             return;
         }
 
-        m_members[index]->setHealthMax(
-            m_members[index]->getHealthMax() - 300
-        );
+        if (m_bonusApplied[index]) {
+            m_members[index]->setHealthMax(
+                m_members[index]->getHealthMax() - 300
+            );
+        }
 
-        for (std::size_t i = index; i < m_size - 1; ++i) {
+        for (std::size_t i = index; i + 1 < m_size; ++i) {
             m_members[i] = m_members[i + 1];
+            m_bonusApplied[i] = m_bonusApplied[i + 1];
         }
 
         --m_size;
 
         if (m_size == 0) {
             delete[] m_members;
+            delete[] m_bonusApplied;
+
             m_members = nullptr;
+            m_bonusApplied = nullptr;
         }
     }
 

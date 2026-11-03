@@ -3,6 +3,9 @@ Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
 Student ID: 100832237
 Date: November 3, 2026
+
+AI assistance from ChatGPT was used to revise Guild copy and health-bonus
+management.
 */
 #ifndef SENECA_GUILD_H
 #define SENECA_GUILD_H
@@ -17,6 +20,7 @@ namespace seneca {
     class Guild {
         std::string m_name;
         Character** m_members{};
+        bool* m_bonusApplied{};
         std::size_t m_size{};
 
         void clear();
