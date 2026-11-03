@@ -1,12 +1,9 @@
-
 /*
 Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
 Student ID: 100832237
 Date: November 3, 2026
 
-AI assistance from ChatGPT was used to revise Guild copy and health-bonus
-management.
 */
 #include "guild.h"
 #include <utility>
@@ -55,8 +52,6 @@ namespace seneca {
 
         for (std::size_t i = 0; i < src.m_size; ++i) {
             newMembers[i] = src.m_members[i];
-
-            // Copying a Guild does not apply another health bonus.
             newBonusApplied[i] = false;
         }
 

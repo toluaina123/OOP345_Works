@@ -1,12 +1,9 @@
-
 /*
 Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
 Student ID: 100832237
 Date: November 3, 2026
 
-AI assistance from ChatGPT was used to revise Guild copy and health-bonus
-management.
 */
 #ifndef SENECA_GUILD_H
 #define SENECA_GUILD_H

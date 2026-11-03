@@ -4,15 +4,13 @@ Seneca email: taina2@myseneca.ca
 Student ID: 100832237
 Date: November 3, 2026
 
-Archer implementation developed with assistance from ChatGPT.
 */
-
 #ifndef SENECA_ARCHER_H
 #define SENECA_ARCHER_H
 
 #include "characterTpl.h"
 #include "health.h"
-#include "weapons.h"
+#include <iostream>
 
 namespace seneca {
 
@@ -23,7 +21,6 @@ namespace seneca {
         Weapon_t m_weapon{};
 
     public:
-
         Archer(const char* name, int healthMax,
             int baseAttack, int baseDefense, Weapon_t weapon)
             : CharacterTpl<SuperHealth>(name, healthMax),
@@ -44,7 +41,9 @@ namespace seneca {
         }
 
         void attack(Character* enemy) override {
-            if (!enemy) return;
+            if (enemy == nullptr) {
+                return;
+            }
 
             std::cout << this->getName() << " is attacking "
                 << enemy->getName() << ".\n";
@@ -65,12 +64,12 @@ namespace seneca {
                 << getDefenseAmnt()
                 << ". Reducing damage received.\n";
 
-            int actual = dmg - getDefenseAmnt();
+            int actualDamage = dmg - getDefenseAmnt();
+            if (actualDamage < 0) {
+                actualDamage = 0;
+            }
 
-            if (actual < 0)
-                actual = 0;
-
-            CharacterTpl<SuperHealth>::takeDamage(actual);
+            CharacterTpl<SuperHealth>::takeDamage(actualDamage);
         }
     };
 

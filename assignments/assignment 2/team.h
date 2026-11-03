@@ -1,11 +1,9 @@
-
 /*
 Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
 Student ID: 100832237
 Date: November 3, 2026
 
-Implementation developed with ChatGPT assistance.
 */
 
 #ifndef SENECA_TEAM_H

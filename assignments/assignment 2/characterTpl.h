@@ -2,7 +2,8 @@
 Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
 Student ID: 100832237
-Date: October 20, 2026
+Date: November 3, 2026
+
 */
 #ifndef SENECA_CHARACTERTPL_H
 #define SENECA_CHARACTERTPL_H
@@ -10,6 +11,7 @@ Date: October 20, 2026
 #include "character.h"
 
 namespace seneca {
+
     template <typename T>
     class CharacterTpl : public Character {
         int m_healthMax{};
@@ -39,10 +41,25 @@ namespace seneca {
         }
 
         void takeDamage(int dmg) override {
-            if (dmg <= 0) return;
+            if (dmg < 0) {
+                dmg = 0;
+            }
+
             m_health -= dmg;
-            if (getHealth() < 0) m_health = 0;
+
+            if (getHealth() <= 0) {
+                m_health = 0;
+                std::cout << "    " << getName()
+                    << " has been defeated!\n";
+            }
+            else {
+                std::cout << "    " << getName()
+                    << " took " << dmg << " damage, "
+                    << getHealth() << " health remaining.\n";
+            }
         }
     };
+
 }
+
 #endif
