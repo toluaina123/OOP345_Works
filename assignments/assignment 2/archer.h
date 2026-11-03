@@ -2,70 +2,78 @@
 Name: Toluwani Aina
 Seneca email: taina2@myseneca.ca
 Student ID: 100832237
-Date: October 20, 2026
+Date: November 3, 2026
+
+Archer implementation developed with assistance from ChatGPT.
 */
-#ifndef SENECA_BARBARIAN_H
-#define SENECA_BARBARIAN_H
+
+#ifndef SENECA_ARCHER_H
+#define SENECA_ARCHER_H
 
 #include "characterTpl.h"
-#include "abilities.h"
+#include "health.h"
 #include "weapons.h"
 
 namespace seneca {
-    template <typename T, typename Ability_t, typename Weapon_t>
-    class Barbarian : public CharacterTpl<T> {
-        Ability_t m_ability{};
-        int m_baseAttack{};
+
+    template <typename Weapon_t>
+    class Archer : public CharacterTpl<SuperHealth> {
         int m_baseDefense{};
-        Weapon_t m_weapon1{};
-        Weapon_t m_weapon2{};
+        int m_baseAttack{};
+        Weapon_t m_weapon{};
 
     public:
-        Barbarian(const char* name, int health, int baseAttack,
-            int baseDefense, Weapon_t weapon1, Weapon_t weapon2)
-            : CharacterTpl<T>(name, health),
-            m_baseAttack(baseAttack),
+
+        Archer(const char* name, int healthMax,
+            int baseAttack, int baseDefense, Weapon_t weapon)
+            : CharacterTpl<SuperHealth>(name, healthMax),
             m_baseDefense(baseDefense),
-            m_weapon1(weapon1),
-            m_weapon2(weapon2) {}
+            m_baseAttack(baseAttack),
+            m_weapon(weapon) {}
 
         int getAttackAmnt() const override {
-            return m_baseAttack
-                + static_cast<int>(static_cast<double>(m_weapon1) / 2)
-                + static_cast<int>(static_cast<double>(m_weapon2) / 2);
+            return static_cast<int>(1.3 * m_baseAttack);
         }
 
         int getDefenseAmnt() const override {
-            return m_baseDefense;
+            return static_cast<int>(1.2 * m_baseDefense);
         }
 
         Character* clone() const override {
-            return new Barbarian(*this);
+            return new Archer(*this);
         }
 
         void attack(Character* enemy) override {
             if (!enemy) return;
 
-            std::cout << this->getName() << " attacks "
+            std::cout << this->getName() << " is attacking "
                 << enemy->getName() << ".\n";
 
-            m_ability.useAbility(this);
-
             int damage = getAttackAmnt();
-            m_ability.transformDamageDealt(damage);
 
-            std::cout << "    Damage dealt: " << damage << '\n';
+            std::cout << "    Archer deals " << damage
+                << " ranged damage!\n";
+
             enemy->takeDamage(damage);
         }
 
         void takeDamage(int dmg) override {
-            m_ability.transformDamageReceived(dmg);
+            std::cout << this->getName()
+                << " is attacked for " << dmg << " damage.\n";
+
+            std::cout << "    Archer has a defense of "
+                << getDefenseAmnt()
+                << ". Reducing damage received.\n";
 
             int actual = dmg - getDefenseAmnt();
-            if (actual < 0) actual = 0;
 
-            CharacterTpl<T>::takeDamage(actual);
+            if (actual < 0)
+                actual = 0;
+
+            CharacterTpl<SuperHealth>::takeDamage(actual);
         }
     };
+
 }
+
 #endif
