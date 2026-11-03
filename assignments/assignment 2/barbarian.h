@@ -27,13 +27,14 @@ namespace seneca {
             m_baseAttack(baseAttack),
             m_baseDefense(baseDefense),
             m_weapon1(weapon1),
-            m_weapon2(weapon2) {
-        }
+            m_weapon2(weapon2) {}
 
         int getAttackAmnt() const override {
-            return m_baseAttack
-                + static_cast<int>(static_cast<double>(m_weapon1) / 2)
-                + static_cast<int>(static_cast<double>(m_weapon2) / 2);
+            return m_baseAttack +
+                static_cast<int>(
+                    (static_cast<double>(m_weapon1) +
+                        static_cast<double>(m_weapon2)) / 2
+                    );
         }
 
         int getDefenseAmnt() const override {
