@@ -161,6 +161,7 @@
     <Text Include="words.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="book.cpp" />
     <ClCompile Include="collection.cpp" />
     <ClCompile Include="movie.cpp" />
     <ClCompile Include="settings.cpp" />
