@@ -30,14 +30,15 @@ namespace seneca {
     }
 
     Collection& Collection::operator+=(MediaItem* item) {
-        if (!item) {
+        if (item == nullptr) {
             return *this;
         }
 
         auto it = std::find_if(
             m_items.begin(), m_items.end(),
             [item](MediaItem* p) {
-                return p->getTitle() == item->getTitle();
+                return p != nullptr &&
+                    p->getTitle() == item->getTitle();
             });
 
         if (it != m_items.end()) {
@@ -71,7 +72,8 @@ namespace seneca {
         auto it = std::find_if(
             m_items.begin(), m_items.end(),
             [title](MediaItem* p) {
-                return p->getTitle() == title;
+                return p != nullptr &&
+                    p->getTitle() == title;
             });
 
         return it == m_items.end() ? nullptr : *it;
@@ -81,20 +83,23 @@ namespace seneca {
         std::for_each(
             m_items.begin(), m_items.end(),
             [](MediaItem* p) {
-                std::string title = p->getTitle();
-                std::string summary = p->getSummary();
+                if (p != nullptr) {
+                    std::string title = p->getTitle();
+                    std::string summary = p->getSummary();
 
-                if (title.size() >= 2 &&
-                    title.front() == '"' &&
-                    title.back() == '"') {
-                    p->setTitle(title.substr(1, title.size() - 2));
-                }
+                    if (title.size() >= 2 &&
+                        title.front() == '"' &&
+                        title.back() == '"') {
+                        p->setTitle(
+                            title.substr(1, title.size() - 2));
+                    }
 
-                if (summary.size() >= 2 &&
-                    summary.front() == '"' &&
-                    summary.back() == '"') {
-                    p->setSummary(
-                        summary.substr(1, summary.size() - 2));
+                    if (summary.size() >= 2 &&
+                        summary.front() == '"' &&
+                        summary.back() == '"') {
+                        p->setSummary(
+                            summary.substr(1, summary.size() - 2));
+                    }
                 }
             });
     }
@@ -104,6 +109,8 @@ namespace seneca {
             std::sort(
                 m_items.begin(), m_items.end(),
                 [](MediaItem* a, MediaItem* b) {
+                    if (!a) return false;
+                    if (!b) return true;
                     return a->getTitle() < b->getTitle();
                 });
         }
@@ -111,6 +118,8 @@ namespace seneca {
             std::sort(
                 m_items.begin(), m_items.end(),
                 [](MediaItem* a, MediaItem* b) {
+                    if (!a) return false;
+                    if (!b) return true;
                     return a->getYear() < b->getYear();
                 });
         }
@@ -119,12 +128,12 @@ namespace seneca {
     std::ostream& operator<<(
         std::ostream& out, const Collection& col) {
 
-        std::ostream* output = &out;
-
         std::for_each(
             col.m_items.begin(), col.m_items.end(),
-            [output](MediaItem* p) {
-                p->display(*output);
+            [&out](MediaItem* p) {
+                if (p != nullptr) {
+                    p->display(out);
+                }
             });
 
         return out;
