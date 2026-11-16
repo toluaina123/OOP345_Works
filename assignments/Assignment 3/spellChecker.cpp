@@ -1,24 +1,71 @@
+
 /*
 Name: Toluwani Aina
 Course: OOP345
 
-I confirm that I completed this assignment independently.
-I wrote and implemented the submitted code myself.
+I completed this assignment independently.
 
 Ownership and Borrowing:
-All dynamically allocated resources are managed according to
-their ownership responsibilities. Non-owning pointers and
-references are borrowed and are not deleted by the borrowing
-object.
-
-Any external resources or references used are acknowledged
-where applicable.
+SpellChecker owns its arrays of strings and replacement
+counters through value semantics. The filename passed to
+the constructor is borrowed. The file stream is locally
+owned and closes automatically when the constructor ends.
 */
 #include "spellChecker.h"
+
 #include <fstream>
 #include <iomanip>
+#include <cctype>
+
 namespace seneca {
-	SpellChecker::SpellChecker(const char* filename) { std::ifstream f(filename); if (!f) throw "Bad file name!"; for (int i = 0; i<6 && f >> m_badWords[i] >> m_goodWords[i]; ++i) {} }
-	void SpellChecker::operator()(std::string& text) { for (int i = 0; i < 6; ++i) { size_t p = 0; while ((p = text.find(m_badWords[i], p)) != std::string::npos) { text.replace(p, m_badWords[i].size(), m_goodWords[i]); p += m_goodWords[i].size(); ++m_counts[i]; } } }
-	void SpellChecker::showStatistics(std::ostream& out) const { for (int i = 0; i < 6; ++i) out << std::right << std::setw(15) << m_badWords[i] << ": " << m_counts[i] << " replacements\n"; }
+
+    SpellChecker::SpellChecker(const char* filename) {
+        std::ifstream file(filename);
+
+        if (!file) {
+            throw "Bad file name!";
+        }
+
+        for (int i = 0; i < 6 && file >> m_badWords[i] >> m_goodWords[i]; ++i) {
+        }
+    }
+
+    void SpellChecker::operator()(std::string& text) {
+        for (int i = 0; i < 6; ++i) {
+            size_t pos = 0;
+
+            while ((pos = text.find(m_badWords[i], pos)) != std::string::npos) {
+
+                size_t end = pos + m_badWords[i].size();
+
+                bool leftBoundary =
+                    pos == 0 ||
+                    !std::isalnum(static_cast<unsigned char>(text[pos - 1]));
+
+                bool rightBoundary =
+                    end == text.size() ||
+                    !std::isalnum(static_cast<unsigned char>(text[end]));
+
+                if (leftBoundary && rightBoundary) {
+                    text.replace(pos, m_badWords[i].size(), m_goodWords[i]);
+
+                    pos += m_goodWords[i].size();
+                    ++m_counts[i];
+                }
+                else {
+                    pos += m_badWords[i].size();
+                }
+            }
+        }
+    }
+
+    void SpellChecker::showStatistics(std::ostream& out) const {
+        for (int i = 0; i < 6; ++i) {
+            out << std::left
+                << std::setw(15) << m_badWords[i]
+                << ": " << m_counts[i]
+                << " replacements\n";
+        }
+    }
+
 }

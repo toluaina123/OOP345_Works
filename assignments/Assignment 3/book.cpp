@@ -18,7 +18,6 @@ where applicable.
 #include "settings.h"
 #include "csvUtils.h"
 
-#include <iostream>
 #include <iomanip>
 #include <string>
 #include <vector>
@@ -37,15 +36,15 @@ namespace seneca {
         m_country(country),
         m_price(price) {}
 
-    Book* Book::createItem(const std::string& strBook) {
+    Book* Book::createItem(const std::string& line) {
 
-        std::string trimmed = trimToken(strBook);
+        std::string trimmed = trimToken(line);
 
         if (trimmed.empty() || trimmed[0] == '#') {
             throw "Not a valid book.";
         }
 
-        std::vector<std::string> fields = splitCSV(strBook);
+        std::vector<std::string> fields = splitCSV(line);
 
         if (fields.size() < 6) {
             throw "Not a valid book.";
@@ -55,7 +54,7 @@ namespace seneca {
             std::string summary = fields[5];
 
             for (size_t i = 6; i < fields.size(); ++i) {
-                summary += "," + fields[i];
+                summary += ", " + fields[i];
             }
 
             return new Book(
@@ -106,10 +105,10 @@ namespace seneca {
             std::string title = getTitle();
             std::string summary = getSummary();
 
-            out << title << " [" << getYear() << "] "
-                << "[" << m_author << "] "
-                << "[" << m_country << "] "
-                << "[" << m_price << "]\n";
+            out << title << " [" << getYear()
+                << "] [" << m_author
+                << "] [" << m_country
+                << "] [" << m_price << "]\n";
 
             out << std::setw(title.size() + 7)
                 << std::setfill('-') << ""
