@@ -1,3 +1,4 @@
+
 #ifndef SENECA_CSVUTILS_H
 #define SENECA_CSVUTILS_H
 
@@ -29,7 +30,8 @@ namespace seneca {
             if (c == '"') {
                 token += c;
 
-                if (quoted && i + 1 < line.size() && line[i + 1] == '"') {
+                if (quoted && i + 1 < line.size() &&
+                    line[i + 1] == '"') {
                     token += line[++i];
                 }
                 else {
@@ -50,7 +52,8 @@ namespace seneca {
         for (auto& field : fields) {
             size_t pos = 0;
 
-            while ((pos = field.find("__COMMA__", pos)) != std::string::npos) {
+            while ((pos = field.find("__COMMA__", pos))
+                != std::string::npos) {
                 field.replace(pos, 9, ",");
                 ++pos;
             }
@@ -60,7 +63,9 @@ namespace seneca {
     }
 
     inline std::string unquote(std::string s) {
-        if (s.size() >= 2 && s.front() == '"' && s.back() == '"') {
+        if (s.size() >= 2 &&
+            s.front() == '"' &&
+            s.back() == '"') {
             return s.substr(1, s.size() - 2);
         }
 

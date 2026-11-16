@@ -1,3 +1,4 @@
+
 #include "book.h"
 #include "settings.h"
 #include "csvUtils.h"
@@ -5,6 +6,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <vector>
 
 namespace seneca {
 
@@ -22,24 +24,32 @@ namespace seneca {
 
     Book* Book::createItem(const std::string& strBook) {
 
-        if (trimToken(strBook).empty() || trimToken(strBook)[0] == '#') {
+        std::string trimmed = trimToken(strBook);
+
+        if (trimmed.empty() || trimmed[0] == '#') {
             throw "Not a valid book.";
         }
 
         std::vector<std::string> fields = splitCSV(strBook);
 
-        if (fields.size() != 6) {
+        if (fields.size() < 6) {
             throw "Not a valid book.";
         }
 
         try {
+            std::string summary = fields[5];
+
+            for (size_t i = 6; i < fields.size(); ++i) {
+                summary += "," + fields[i];
+            }
+
             return new Book(
                 fields[0],
                 fields[1],
                 fields[2],
                 std::stod(fields[3]),
                 static_cast<unsigned short>(std::stoi(fields[4])),
-                fields[5]
+                summary
             );
         }
         catch (...) {
@@ -65,10 +75,12 @@ namespace seneca {
             std::string summary = getSummary();
 
             if (g_settings.m_maxSummaryWidth > -1 &&
-                summary.size() > static_cast<size_t>(g_settings.m_maxSummaryWidth)) {
+                summary.size() >
+                static_cast<size_t>(g_settings.m_maxSummaryWidth)) {
 
                 summary = summary.substr(
-                    0, g_settings.m_maxSummaryWidth - 3
+                    0,
+                    g_settings.m_maxSummaryWidth - 3
                 ) + "...";
             }
 
@@ -86,19 +98,25 @@ namespace seneca {
 
             out << std::setw(title.size() + 7)
                 << std::setfill('-') << ""
-                << '\n' << std::setfill(' ');
+                << '\n'
+                << std::setfill(' ');
 
-            for (size_t i = 0; i < summary.size();
+            for (size_t i = 0;
+                i < summary.size();
                 i += g_settings.m_maxSummaryWidth) {
 
                 out << "    "
-                    << summary.substr(i, g_settings.m_maxSummaryWidth)
+                    << summary.substr(
+                        i,
+                        g_settings.m_maxSummaryWidth
+                    )
                     << '\n';
             }
 
             out << std::setw(title.size() + 7)
                 << std::setfill('-') << ""
-                << std::setfill(' ') << '\n';
+                << std::setfill(' ')
+                << '\n';
         }
     }
 
