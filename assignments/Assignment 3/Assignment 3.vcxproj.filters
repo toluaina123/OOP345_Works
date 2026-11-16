@@ -25,6 +25,27 @@
     <ClInclude Include="mediaItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\book.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\csvUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\movie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\spellChecker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\tvShow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="sample_output_gcc.txt" />
@@ -33,6 +54,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tester_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\collection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\movie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\spellChecker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\tvShow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

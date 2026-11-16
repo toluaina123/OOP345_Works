@@ -146,6 +146,13 @@
     <None Include="tvShows.csv" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\book.h" />
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\collection.h" />
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\csvUtils.h" />
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\movie.h" />
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\settings.h" />
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\spellChecker.h" />
+    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\tvShow.h" />
     <ClInclude Include="mediaItem.h" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +161,11 @@
     <Text Include="words.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\collection.cpp" />
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\movie.cpp" />
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\settings.cpp" />
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\spellChecker.cpp" />
+    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\tvShow.cpp" />
     <ClCompile Include="tester_1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
