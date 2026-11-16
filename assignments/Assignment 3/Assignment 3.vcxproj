@@ -146,14 +146,14 @@
     <None Include="tvShows.csv" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\book.h" />
-    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\collection.h" />
-    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\csvUtils.h" />
-    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\movie.h" />
-    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\settings.h" />
-    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\spellChecker.h" />
-    <ClInclude Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\tvShow.h" />
+    <ClInclude Include="book.h" />
+    <ClInclude Include="collection.h" />
+    <ClInclude Include="csvUtils.h" />
     <ClInclude Include="mediaItem.h" />
+    <ClInclude Include="movie.h" />
+    <ClInclude Include="settings.h" />
+    <ClInclude Include="spellChecker.h" />
+    <ClInclude Include="tvShow.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="sample_output_gcc.txt" />
@@ -161,12 +161,12 @@
     <Text Include="words.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\collection.cpp" />
-    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\movie.cpp" />
-    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\settings.cpp" />
-    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\spellChecker.cpp" />
-    <ClCompile Include="..\..\..\..\Users\tolu_\Downloads\oop345_asgn3_source\oop345_asgn3\tvShow.cpp" />
+    <ClCompile Include="collection.cpp" />
+    <ClCompile Include="movie.cpp" />
+    <ClCompile Include="settings.cpp" />
+    <ClCompile Include="spellChecker.cpp" />
     <ClCompile Include="tester_1.cpp" />
+    <ClCompile Include="tvShow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
