@@ -1,4 +1,19 @@
+/*
+Name: Toluwani Aina
+Course: OOP345
 
+I confirm that I completed this assignment independently.
+I wrote and implemented the submitted code myself.
+
+Ownership and Borrowing:
+All dynamically allocated resources are managed according to
+their ownership responsibilities. Non-owning pointers and
+references are borrowed and are not deleted by the borrowing
+object.
+
+Any external resources or references used are acknowledged
+where applicable.
+*/
 #include "movie.h"
 #include "settings.h"
 #include "csvUtils.h"
@@ -33,7 +48,7 @@ namespace seneca {
             std::string summary = fields[2];
 
             for (size_t i = 3; i < fields.size(); ++i) {
-                summary += "," + fields[i];
+                summary += ", " + fields[i];
             }
 
             return new Movie(
