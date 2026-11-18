@@ -9,6 +9,7 @@ Each TvEpisode::m_show pointer borrows its parent TvShow.
 Collection pointers are borrowed during episode lookup.
 No ownership of the parent show transfers to an episode.
 */
+
 #include "tvShow.h"
 #include "settings.h"
 #include "csvUtils.h"
@@ -36,11 +37,12 @@ namespace seneca {
 
         std::string trimmed = trimToken(strShow);
 
+        // Ignore empty lines and comment/header records.
         if (trimmed.empty() || trimmed[0] == '#') {
-            throw "Not a valid show.";
+            return nullptr;
         }
 
-        std::vector<std::string> fields = splitCSV(strShow);
+        std::vector<std::string> fields = splitCSV(trimmed);
 
         if (fields.size() != 4) {
             throw "Not a valid show.";
@@ -67,11 +69,12 @@ namespace seneca {
 
         std::string trimmed = trimToken(strEpisode);
 
+        // Episode headers and empty records are invalid.
         if (trimmed.empty() || trimmed[0] == '#') {
-            return;
+            throw "Not a valid episode.";
         }
 
-        std::vector<std::string> fields = splitCSV(strEpisode);
+        std::vector<std::string> fields = splitCSV(trimmed);
 
         if (fields.size() != 8) {
             throw "Not a valid episode.";
@@ -93,24 +96,32 @@ namespace seneca {
 
             episode.m_airDate = fields[4];
 
-            unsigned int hours = 0;
-            unsigned int minutes = 0;
-            unsigned int seconds = 0;
-
+            // Convert HH:MM:SS into seconds.
             const std::string& length = fields[5];
 
-            if (length.size() >= 8) {
-                hours = static_cast<unsigned int>(
+            if (length.size() != 8 ||
+                length[2] != ':' ||
+                length[5] != ':') {
+                throw "Not a valid episode.";
+            }
+
+            unsigned int hours =
+                static_cast<unsigned int>(
                     std::stoul(length.substr(0, 2))
                     );
 
-                minutes = static_cast<unsigned int>(
+            unsigned int minutes =
+                static_cast<unsigned int>(
                     std::stoul(length.substr(3, 2))
                     );
 
-                seconds = static_cast<unsigned int>(
+            unsigned int seconds =
+                static_cast<unsigned int>(
                     std::stoul(length.substr(6, 2))
                     );
+
+            if (minutes > 59 || seconds > 59) {
+                throw "Not a valid episode.";
             }
 
             episode.m_length =
@@ -121,13 +132,20 @@ namespace seneca {
 
             bool found = false;
 
+            // Collection owns the shows.
+            // The pointer returned by operator[] is borrowed.
             for (unsigned int i = 0; i < col.size(); ++i) {
 
                 auto* show = dynamic_cast<TvShow*>(col[i]);
 
                 if (show && show->m_id == fields[0]) {
+
+                    // The episode borrows its parent show.
                     episode.m_show = show;
+
+                    // The show stores the episode by value.
                     show->m_episodes.push_back(episode);
+
                     found = true;
                     break;
                 }
@@ -140,6 +158,9 @@ namespace seneca {
             }
         }
         catch (const std::string&) {
+            throw;
+        }
+        catch (const char*) {
             throw;
         }
         catch (...) {
@@ -194,12 +215,15 @@ namespace seneca {
                 << std::setfill(' ');
 
             if (g_settings.m_maxSummaryWidth > 0) {
-                for (size_t i = 0; i < summary.size();
+
+                for (size_t i = 0;
+                    i < summary.size();
                     i += g_settings.m_maxSummaryWidth) {
 
                     out << "    "
                         << summary.substr(
-                            i, g_settings.m_maxSummaryWidth
+                            i,
+                            g_settings.m_maxSummaryWidth
                         )
                         << '\n';
                 }
@@ -225,13 +249,15 @@ namespace seneca {
                 out << '\n';
 
                 if (g_settings.m_maxSummaryWidth > 8) {
+
                     for (size_t i = 0;
                         i < episode.m_summary.size();
                         i += g_settings.m_maxSummaryWidth - 8) {
 
                         out << "            "
                             << episode.m_summary.substr(
-                                i, g_settings.m_maxSummaryWidth - 8
+                                i,
+                                g_settings.m_maxSummaryWidth - 8
                             )
                             << '\n';
                     }
@@ -283,6 +309,7 @@ namespace seneca {
             longEpisodes.end(),
             std::back_inserter(titles),
             [](const TvEpisode& episode) {
+
                 return episode.m_title.empty()
                     ? "Episode " + std::to_string(
                         episode.m_numberOverall
