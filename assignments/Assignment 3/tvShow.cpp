@@ -37,9 +37,9 @@ namespace seneca {
 
         std::string trimmed = trimToken(strShow);
 
-        // Ignore empty lines and comment/header records.
+        // Show headers and empty records are invalid.
         if (trimmed.empty() || trimmed[0] == '#') {
-            return nullptr;
+            throw "Not a valid show.";
         }
 
         std::vector<std::string> fields = splitCSV(trimmed);
@@ -96,12 +96,12 @@ namespace seneca {
 
             episode.m_airDate = fields[4];
 
-            // Convert HH:MM:SS into seconds.
+            // Convert HH:MM.SS into seconds.
             const std::string& length = fields[5];
 
             if (length.size() != 8 ||
                 length[2] != ':' ||
-                length[5] != ':') {
+                length[5] != '.') {
                 throw "Not a valid episode.";
             }
 
