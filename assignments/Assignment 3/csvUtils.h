@@ -1,18 +1,14 @@
+
 /*
 Name: Toluwani Aina
 Course: OOP345
 
-I confirm that I completed this assignment independently.
-I wrote and implemented the submitted code myself.
-
 Ownership and Borrowing:
-All dynamically allocated resources are managed according to
-their ownership responsibilities. Non-owning pointers and
-references are borrowed and are not deleted by the borrowing
-object.
-
-Any external resources or references used are acknowledged
-where applicable.
+trimToken() takes its string argument by value and returns
+an independent string. splitCSV() borrows the input line
+through a const reference and returns a vector owning its
+field strings. No raw pointers or dynamically allocated
+resources are managed directly by this module.
 */
 #ifndef SENECA_CSVUTILS_H
 #define SENECA_CSVUTILS_H
@@ -34,7 +30,9 @@ namespace seneca {
         return s.substr(first, last - first + 1);
     }
 
-    inline std::vector<std::string> splitCSV(const std::string& line) {
+    inline std::vector<std::string> splitCSV(
+        const std::string& line
+    ) {
         std::vector<std::string> fields;
         std::string token;
         bool quoted = false;
@@ -45,8 +43,8 @@ namespace seneca {
             if (c == '"') {
                 token += c;
 
-                if (quoted && i + 1 < line.size() &&
-                    line[i + 1] == '"') {
+                if (quoted && i + 1 < line.size()
+                    && line[i + 1] == '"') {
                     token += line[++i];
                 }
                 else {
@@ -63,16 +61,6 @@ namespace seneca {
         }
 
         fields.push_back(trimToken(token));
-
-        for (auto& field : fields) {
-            size_t pos = 0;
-
-            while ((pos = field.find("__COMMA__", pos))
-                != std::string::npos) {
-                field.replace(pos, 9, ",");
-                ++pos;
-            }
-        }
 
         return fields;
     }

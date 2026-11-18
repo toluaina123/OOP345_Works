@@ -1,18 +1,13 @@
+
 /*
 Name: Toluwani Aina
 Course: OOP345
 
-I confirm that I completed this assignment independently.
-I wrote and implemented the submitted code myself.
-
 Ownership and Borrowing:
-All dynamically allocated resources are managed according to
-their ownership responsibilities. Non-owning pointers and
-references are borrowed and are not deleted by the borrowing
-object.
-
-Any external resources or references used are acknowledged
-where applicable.
+TvShow owns its ID string and stores episodes by value.
+Each TvEpisode::m_show pointer borrows its parent TvShow.
+Collection pointers are borrowed during episode lookup.
+No ownership of the parent show transfers to an episode.
 */
 #include "tvShow.h"
 #include "settings.h"
@@ -73,7 +68,7 @@ namespace seneca {
         std::string trimmed = trimToken(strEpisode);
 
         if (trimmed.empty() || trimmed[0] == '#') {
-            throw "Not a valid episode.";
+            return;
         }
 
         std::vector<std::string> fields = splitCSV(strEpisode);
@@ -131,10 +126,8 @@ namespace seneca {
                 auto* show = dynamic_cast<TvShow*>(col[i]);
 
                 if (show && show->m_id == fields[0]) {
-
                     episode.m_show = show;
                     show->m_episodes.push_back(episode);
-
                     found = true;
                     break;
                 }
@@ -176,7 +169,7 @@ namespace seneca {
 
             std::string summary = getSummary();
 
-            if (g_settings.m_maxSummaryWidth > -1 &&
+            if (g_settings.m_maxSummaryWidth >= 3 &&
                 summary.size() >
                 static_cast<size_t>(g_settings.m_maxSummaryWidth)) {
 
@@ -200,16 +193,16 @@ namespace seneca {
                 << '\n'
                 << std::setfill(' ');
 
-            for (size_t i = 0;
-                i < summary.size();
-                i += g_settings.m_maxSummaryWidth) {
+            if (g_settings.m_maxSummaryWidth > 0) {
+                for (size_t i = 0; i < summary.size();
+                    i += g_settings.m_maxSummaryWidth) {
 
-                out << "    "
-                    << summary.substr(
-                        i,
-                        g_settings.m_maxSummaryWidth
-                    )
-                    << '\n';
+                    out << "    "
+                        << summary.substr(
+                            i, g_settings.m_maxSummaryWidth
+                        )
+                        << '\n';
+                }
             }
 
             for (const auto& episode : m_episodes) {
@@ -231,16 +224,17 @@ namespace seneca {
 
                 out << '\n';
 
-                for (size_t i = 0;
-                    i < episode.m_summary.size();
-                    i += g_settings.m_maxSummaryWidth - 8) {
+                if (g_settings.m_maxSummaryWidth > 8) {
+                    for (size_t i = 0;
+                        i < episode.m_summary.size();
+                        i += g_settings.m_maxSummaryWidth - 8) {
 
-                    out << "            "
-                        << episode.m_summary.substr(
-                            i,
-                            g_settings.m_maxSummaryWidth - 8
-                        )
-                        << '\n';
+                        out << "            "
+                            << episode.m_summary.substr(
+                                i, g_settings.m_maxSummaryWidth - 8
+                            )
+                            << '\n';
+                    }
                 }
             }
 
