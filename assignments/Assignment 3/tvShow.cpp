@@ -28,7 +28,8 @@ namespace seneca {
     unsigned int TvShow::toSeconds(const std::string& text)
     {
 
-        if (text.size() != 8 || text[2] != ':' || text[5] != ':') {
+        if (text.size() != 8 || text[2] != ':' ||
+            (text[5] != ':' && text[5] != '.')) {
             throw "Not a valid episode.";
         }
         unsigned int h = static_cast<unsigned int>(std::stoul(text.substr(0, 2)));
