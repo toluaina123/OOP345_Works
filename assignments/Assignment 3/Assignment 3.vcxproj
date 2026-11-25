@@ -148,7 +148,7 @@
   <ItemGroup>
     <ClInclude Include="book.h" />
     <ClInclude Include="collection.h" />
-    <ClInclude Include="csvUtils.h" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="mediaItem.h" />
     <ClInclude Include="movie.h" />
     <ClInclude Include="settings.h" />

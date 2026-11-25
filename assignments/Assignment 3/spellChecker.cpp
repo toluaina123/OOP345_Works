@@ -9,10 +9,9 @@ counters through value semantics. The filename passed to
 the constructor is borrowed. The file stream is locally
 owned and closes automatically when the constructor ends.
 */
-
-#include "spellChecker.h"
 #include <fstream>
 #include <iomanip>
+#include "spellChecker.h"
 
 namespace seneca {
 

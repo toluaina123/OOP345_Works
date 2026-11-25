@@ -14,109 +14,78 @@ object.
 Any external resources or references used are acknowledged
 where applicable.
 */
-#include "movie.h"
-#include "settings.h"
-#include "csvUtils.h"
 
 #include <iomanip>
 #include <string>
 #include <vector>
+#include "movie.h"
+#include "settings.h"
+#include "util.h"
 
 namespace seneca {
 
-    Movie::Movie(
-        const std::string& title,
-        unsigned short year,
+    Movie::Movie(const std::string& title, unsigned short year,
         const std::string& summary)
         : MediaItem(title, summary, year) {}
 
-    Movie* Movie::createItem(const std::string& line) {
-
-        std::string trimmed = trimToken(line);
-
+    Movie* Movie::createItem(const std::string& strMovie) {
+        std::string trimmed = trimToken(strMovie);
         if (trimmed.empty() || trimmed[0] == '#') {
             throw "Not a valid movie.";
         }
 
-        std::vector<std::string> fields = splitCSV(line);
-
+        std::vector<std::string> fields = splitCSV(trimmed);
         if (fields.size() < 3) {
             throw "Not a valid movie.";
         }
 
         try {
             std::string summary = fields[2];
-
             for (size_t i = 3; i < fields.size(); ++i) {
                 summary += ", " + fields[i];
             }
-
-            return new Movie(
-                fields[0],
+            return new Movie(fields[0],
                 static_cast<unsigned short>(std::stoi(fields[1])),
-                summary
-            );
+                summary);
         }
         catch (...) {
             throw "Not a valid movie.";
         }
     }
 
-    void Movie::display(std::ostream& out) const {
-
-        if (g_settings.m_tableView) {
-
-            out << "M | "
-                << std::left << std::setfill('.')
-                << std::setw(50) << getTitle()
-                << " | "
-                << std::right << std::setfill(' ')
-                << std::setw(9) << getYear()
-                << " | "
-                << std::left;
-
-            std::string summary = getSummary();
-
-            if (g_settings.m_maxSummaryWidth > -1 &&
-                summary.size() >
-                static_cast<size_t>(g_settings.m_maxSummaryWidth)) {
-
-                summary = summary.substr(
-                    0,
-                    g_settings.m_maxSummaryWidth - 3
-                ) + "...";
+    void Movie::display(std::ostream& out) const
+    {
+        if (g_settings.m_tableView)
+        {
+            out << "M | ";
+            out << std::left << std::setfill('.');
+            out << std::setw(50) << this->getTitle() << " | ";
+            out << std::right << std::setfill(' ');
+            out << std::setw(9) << this->getYear() << " | ";
+            out << std::left;
+            if (g_settings.m_maxSummaryWidth > -1)
+            {
+                if (static_cast<short>(this->getSummary().size()) <= g_settings.m_maxSummaryWidth)
+                    out << this->getSummary();
+                else
+                    out << this->getSummary().substr(0, g_settings.m_maxSummaryWidth - 3) << "...";
             }
-
-            out << summary << std::endl;
+            else
+                out << this->getSummary();
+            out << std::endl;
         }
-        else {
-
-            std::string title = getTitle();
-            std::string summary = getSummary();
-
-            out << title << " [" << getYear() << "]\n";
-
-            out << std::setw(title.size() + 7)
-                << std::setfill('-') << ""
-                << '\n'
-                << std::setfill(' ');
-
-            for (size_t i = 0;
-                i < summary.size();
-                i += g_settings.m_maxSummaryWidth) {
-
-                out << "    "
-                    << summary.substr(
-                        i,
-                        g_settings.m_maxSummaryWidth
-                    )
-                    << '\n';
+        else
+        {
+            size_t pos = 0;
+            out << this->getTitle() << " [" << this->getYear() << "]\n";
+            out << std::setw(this->getTitle().size() + 7) << std::setfill('-') << "" << '\n';
+            while (pos < this->getSummary().size())
+            {
+                out << "    " << this->getSummary().substr(pos, g_settings.m_maxSummaryWidth) << '\n';
+                pos += g_settings.m_maxSummaryWidth;
             }
-
-            out << std::setw(title.size() + 7)
-                << std::setfill('-') << ""
-                << std::setfill(' ')
-                << '\n';
+            out << std::setw(this->getTitle().size() + 7) << std::setfill('-') << ""
+                << std::setfill(' ') << '\n';
         }
     }
 

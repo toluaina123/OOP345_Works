@@ -14,22 +14,20 @@ object.
 Any external resources or references used are acknowledged
 where applicable.
 */
-#include "collection.h"
 #include <algorithm>
+#include <ostream>
 #include <stdexcept>
 #include <string>
-#include <ostream>
+#include "collection.h"
 
 namespace seneca {
 
-    Collection::Collection(const std::string& name)
-        : m_name(name) {}
+    Collection::Collection(const std::string& name) : m_name(name) {}
 
     Collection::~Collection() {
-        std::for_each(m_items.begin(), m_items.end(),
-            [](MediaItem* p) {
-                delete p;
-            });
+        for (MediaItem* item : m_items) {
+            delete item;
+        }
     }
 
     const std::string& Collection::name() const {
@@ -50,24 +48,20 @@ namespace seneca {
             return *this;
         }
 
-        auto it = std::find_if(
-            m_items.begin(), m_items.end(),
-            [item](MediaItem* p) {
-                return p != nullptr &&
-                    p->getTitle() == item->getTitle();
-            });
+        bool duplicate = false;
+        for (size_t i = 0; i < m_items.size() && !duplicate; ++i) {
+            duplicate = (m_items[i]->getTitle() == item->getTitle());
+        }
 
-        if (it != m_items.end()) {
+        if (duplicate) {
             delete item;
         }
         else {
             m_items.push_back(item);
-
             if (m_observer) {
                 m_observer(*this, *item);
             }
         }
-
         return *this;
     }
 
@@ -78,80 +72,52 @@ namespace seneca {
                 "]. Collection has [" +
                 std::to_string(m_items.size()) + "] items.");
         }
-
         return m_items[idx];
     }
 
-    MediaItem* Collection::operator[](
-        const std::string& title) const {
-
-        auto it = std::find_if(
-            m_items.begin(), m_items.end(),
-            [title](MediaItem* p) {
-                return p != nullptr &&
-                    p->getTitle() == title;
+    MediaItem* Collection::operator[](const std::string& title) const {
+        auto it = std::find_if(m_items.begin(), m_items.end(),
+            [title](const MediaItem* p) {
+                return p->getTitle() == title;
             });
-
         return it == m_items.end() ? nullptr : *it;
     }
 
     void Collection::removeQuotes() {
-        std::for_each(
-            m_items.begin(), m_items.end(),
+        std::for_each(m_items.begin(), m_items.end(),
             [](MediaItem* p) {
-                if (p != nullptr) {
-                    std::string title = p->getTitle();
-                    std::string summary = p->getSummary();
+                std::string title = p->getTitle();
+                std::string summary = p->getSummary();
 
-                    if (title.size() >= 2 &&
-                        title.front() == '"' &&
-                        title.back() == '"') {
-                        p->setTitle(
-                            title.substr(1, title.size() - 2));
-                    }
+                if (!title.empty() && title.front() == '"') title.erase(0, 1);
+                if (!title.empty() && title.back() == '"') title.pop_back();
+                if (!summary.empty() && summary.front() == '"') summary.erase(0, 1);
+                if (!summary.empty() && summary.back() == '"') summary.pop_back();
 
-                    if (summary.size() >= 2 &&
-                        summary.front() == '"' &&
-                        summary.back() == '"') {
-                        p->setSummary(
-                            summary.substr(1, summary.size() - 2));
-                    }
-                }
+                p->setTitle(title);
+                p->setSummary(summary);
             });
     }
 
     void Collection::sort(const std::string& field) {
         if (field == "title") {
-            std::sort(
-                m_items.begin(), m_items.end(),
-                [](MediaItem* a, MediaItem* b) {
-                    if (!a) return false;
-                    if (!b) return true;
+            std::sort(m_items.begin(), m_items.end(),
+                [](const MediaItem* a, const MediaItem* b) {
                     return a->getTitle() < b->getTitle();
                 });
         }
         else if (field == "year") {
-            std::sort(
-                m_items.begin(), m_items.end(),
-                [](MediaItem* a, MediaItem* b) {
-                    if (!a) return false;
-                    if (!b) return true;
+            std::sort(m_items.begin(), m_items.end(),
+                [](const MediaItem* a, const MediaItem* b) {
                     return a->getYear() < b->getYear();
                 });
         }
     }
 
-    std::ostream& operator<<(
-        std::ostream& out, const Collection& col) {
-
-        std::for_each(
-            col.m_items.begin(), col.m_items.end(),
-            [&out](MediaItem* p) {
-                if (p != nullptr) {
-                    p->display(out);
-                }
-            });
-
+    std::ostream& operator<<(std::ostream& out, const Collection& col) {
+        for (size_t i = 0; i < col.size(); ++i) {
+            col[i]->display(out);
+        }
         return out;
     }
 

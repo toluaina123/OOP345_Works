@@ -14,10 +14,6 @@ object.
 Any external resources or references used are acknowledged
 where applicable.
 */
+
 #include "settings.h"
-
-namespace seneca {
-
-    Settings g_settings;
-
-}
+namespace seneca { Settings g_settings; }
